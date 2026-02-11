@@ -10,12 +10,14 @@ requires-python = ">=3.12"
 dependencies = [
     "click>=8.3.1",
     "loguru>=0.7.3",
+    "packaging>=26.0",
     "tqdm>=4.67.3",
 ]
 
 [project.scripts]
 max-code-lines = "pcr.hooks.max_code_lines:main"
 ban-constructs = "pcr.hooks.ban_constructs:main"
+ban-dependency = "pcr.hooks.ban_dependency:main"
 
 [build-system]
 requires = ["uv_build>=0.9.28,<0.10.0"]

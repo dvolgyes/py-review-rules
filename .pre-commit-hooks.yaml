@@ -11,3 +11,11 @@
   entry: ban-constructs
   language: python
   types: [python]
+
+- id: ban-dependency
+  name: ban-dependency
+  description: Ban specific packages from the resolved dependency tree.
+  entry: ban-dependency
+  language: python
+  pass_filenames: false
+  always_run: true
