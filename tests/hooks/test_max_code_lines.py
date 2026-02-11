@@ -1,4 +1,4 @@
-from pcr.hooks.max_code_lines import Violation, check_file
+from pcr.hooks.max_code_lines import Violation, check_file, check_file_sloc
 
 
 def test_short_function_no_violation() -> None:
@@ -84,3 +84,30 @@ def test_violation_dataclass_is_frozen() -> None:
         raise AssertionError(msg)
     except AttributeError:
         pass
+
+
+def test_file_under_sloc_limit() -> None:
+    source = "x = 1\ny = 2\nz = 3\n"
+    assert check_file_sloc("test.py", source, max_file_lines=10) == []
+
+
+def test_file_exceeding_sloc_limit() -> None:
+    lines = [f"x{i} = {i}" for i in range(20)]
+    source = "\n".join(lines) + "\n"
+    violations = check_file_sloc("test.py", source, max_file_lines=10)
+    assert len(violations) == 1
+    v = violations[0]
+    assert v.kind == "file"
+    assert v.name == "<module>"
+    assert v.line == 1
+    assert v.filepath == "test.py"
+    assert v.sloc_count == 20
+    assert v.max_allowed == 10
+
+
+def test_file_sloc_excludes_blanks_and_comments() -> None:
+    code_lines = [f"x{i} = {i}" for i in range(5)]
+    filler = ["", "# comment"] * 50
+    source = "\n".join(code_lines + filler) + "\n"
+    # 5 SLOC lines + 100 blank/comment lines => only 5 SLOC
+    assert check_file_sloc("test.py", source, max_file_lines=10) == []

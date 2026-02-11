@@ -39,7 +39,14 @@ repos:
   rev: v0.15.0
   hooks:
   - id: ruff-check
-    args: [--fix, --exclude, tests/, '--extend-select=ANN,YTT,ASYNC,C4,T20,RET,SIM,PTH,FLY,NPY,PD,N,UP,FURB,RUF']
+    args:
+    - --fix
+    - --extend-select=ANN,YTT,ASYNC,C4,T20,RET,SIM,PTH,FLY,NPY,PD,N,UP,FURB,RUF,TID251,C901,PLR,PLW,B,BLE,S,EM,ERA,ARG,FBT,PERF,PIE,TRY
+    - --config
+    - |
+      [lint.flake8-tidy-imports.banned-api]
+      "osgeo".msg = "Use `rasterio` (preferred) or `geopandas`/`shapely` (if necessary) instead."
+      "os.path".msg = "Use the modern `pathlib` module instead of `os.path`."
   - id: ruff-format
 
 # Source: 300_mdformat.yaml [central]
@@ -68,27 +75,19 @@ repos:
     args: [--ignore-missing-imports, --strict]
     additional_dependencies: [types-requests, types-click, types-setuptools]
 
-# Source: custom local hooks
+# Source: 800_custom_hooks.yaml [local]
 - repo: local
   hooks:
   - id: max-code-lines
     name: max-code-lines
-    entry: uv run max-code-lines --max-function-lines 50 --max-class-lines 200
+    entry: uv run max-code-lines --max-file-lines 500
     language: system
     types: [python]
-
-  - id: ban-constructs
-    name: ban-constructs
-    entry: uv run ban-constructs --ban "click.echo:use loguru's logger (or print if necessary) instead of click.echo"
+  - id: max-nesting-depth
+    name: max-nesting-depth
+    entry: uv run max-nesting-depth
     language: system
     types: [python]
-
-  - id: ban-dependency
-    name: ban-dependency
-    entry: uv run ban-dependency --ban "pyyaml:use ruamel.yaml instead"
-    language: system
-    pass_filenames: false
-    always_run: true
 
 # Source: 900_shfmt.yaml [central]
 - repo: https://github.com/maxwinterstein/shfmt-py

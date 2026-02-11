@@ -85,7 +85,7 @@ def check_installed_packages(
 def _get_installed_packages() -> list[dict[str, str]]:
     """Get installed packages via uv pip list."""
     result = subprocess.run(
-        ["uv", "pip", "list", "--format", "json"],
+        ["uv", "pip", "list", "--format", "json"],  # noqa: S607
         capture_output=True,
         text=True,
         check=False,
@@ -102,7 +102,7 @@ def _get_installed_packages() -> list[dict[str, str]]:
 @click.option("--logfile", default=None, type=click.Path(), help="Optional log file.")
 @click.option("--loglevel", default="INFO", help="Log level.")
 def main(
-    files: tuple[str, ...],
+    files: tuple[str, ...],  # noqa: ARG001
     ban: tuple[str, ...],
     logfile: str | None,
     loglevel: str,

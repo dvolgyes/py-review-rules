@@ -34,6 +34,62 @@ def reconstruct_dotted_name(node: ast.expr) -> str | None:
     return None
 
 
+def _scan_imports(
+    tree: ast.Module,
+    filepath: str,
+    banned: dict[str, str],
+) -> tuple[list[BanViolation], dict[str, str]]:
+    """Scan import statements for banned constructs."""
+    violations: list[BanViolation] = []
+    alias_map: dict[str, str] = {}
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom) and node.module:
+            for alias in node.names:
+                full_name = f"{node.module}.{alias.name}"
+                if full_name in banned:
+                    violations.append(
+                        BanViolation(
+                            filepath, node.lineno, full_name, banned[full_name]
+                        )
+                    )
+                    alias_map[alias.asname or alias.name] = full_name
+
+        if isinstance(node, ast.Import):
+            violations.extend(
+                BanViolation(filepath, node.lineno, alias.name, banned[alias.name])
+                for alias in node.names
+                if alias.name in banned
+            )
+
+    return violations, alias_map
+
+
+def _scan_usage(
+    tree: ast.Module,
+    filepath: str,
+    banned: dict[str, str],
+    alias_map: dict[str, str],
+) -> list[BanViolation]:
+    """Scan AST for usage of banned constructs."""
+    violations: list[BanViolation] = []
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Attribute):
+            dotted = reconstruct_dotted_name(node)
+            if dotted and dotted in banned:
+                violations.append(
+                    BanViolation(filepath, node.lineno, dotted, banned[dotted])
+                )
+        elif isinstance(node, ast.Name) and node.id in alias_map:
+            construct = alias_map[node.id]
+            violations.append(
+                BanViolation(filepath, node.lineno, construct, banned[construct])
+            )
+
+    return violations
+
+
 def check_file(
     filepath: str,
     source: str,
@@ -46,48 +102,9 @@ def check_file(
         logger.warning("Skipping {} (syntax error)", filepath)
         return []
 
-    violations: list[BanViolation] = []
-    alias_map: dict[str, str] = {}  # local name -> banned construct
-
-    # Pass 1: scan imports
-    for node in ast.walk(tree):
-        if isinstance(node, ast.ImportFrom) and node.module:
-            for alias in node.names:
-                full_name = f"{node.module}.{alias.name}"
-                if full_name in banned:
-                    violations.append(
-                        BanViolation(
-                            filepath, node.lineno, full_name, banned[full_name]
-                        )
-                    )
-                    local_name = alias.asname or alias.name
-                    alias_map[local_name] = full_name
-
-        if isinstance(node, ast.Import):
-            for alias in node.names:
-                if alias.name in banned:
-                    violations.append(
-                        BanViolation(
-                            filepath, node.lineno, alias.name, banned[alias.name]
-                        )
-                    )
-
-    # Pass 2: walk AST for usage
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Attribute):
-            dotted = reconstruct_dotted_name(node)
-            if dotted and dotted in banned:
-                violations.append(
-                    BanViolation(filepath, node.lineno, dotted, banned[dotted])
-                )
-
-        elif isinstance(node, ast.Name) and node.id in alias_map:
-            construct = alias_map[node.id]
-            violations.append(
-                BanViolation(filepath, node.lineno, construct, banned[construct])
-            )
-
-    return violations
+    import_violations, alias_map = _scan_imports(tree, filepath, banned)
+    usage_violations = _scan_usage(tree, filepath, banned, alias_map)
+    return import_violations + usage_violations
 
 
 @click.command()

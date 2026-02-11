@@ -64,16 +64,40 @@ def check_file(
     return violations
 
 
+def check_file_sloc(
+    filepath: str,
+    source: str,
+    max_file_lines: int,
+) -> list[Violation]:
+    """Check if a file's total SLOC exceeds the limit."""
+    lines = source.splitlines()
+    sloc = count_sloc(lines, 1, len(lines))
+    if sloc > max_file_lines:
+        return [
+            Violation(
+                filepath=filepath,
+                line=1,
+                name="<module>",
+                kind="file",
+                sloc_count=sloc,
+                max_allowed=max_file_lines,
+            )
+        ]
+    return []
+
+
 @click.command()
 @click.argument("files", nargs=-1, type=click.Path(exists=True))
 @click.option("--max-function-lines", default=50, type=int, show_default=True)
 @click.option("--max-class-lines", default=200, type=int, show_default=True)
+@click.option("--max-file-lines", default=500, type=int, show_default=True)
 @click.option("--logfile", default=None, type=click.Path(), help="Optional log file.")
 @click.option("--loglevel", default="INFO", help="Log level.")
 def main(
     files: tuple[str, ...],
     max_function_lines: int,
     max_class_lines: int,
+    max_file_lines: int,
     logfile: str | None,
     loglevel: str,
 ) -> None:
@@ -89,6 +113,7 @@ def main(
         all_violations.extend(
             check_file(filepath, source, max_function_lines, max_class_lines)
         )
+        all_violations.extend(check_file_sloc(filepath, source, max_file_lines))
 
     for v in all_violations:
         print(  # noqa: T201

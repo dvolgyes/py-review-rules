@@ -19,3 +19,10 @@
   language: python
   pass_filenames: false
   always_run: true
+
+- id: max-nesting-depth
+  name: max-nesting-depth
+  description: Enforce maximum nesting depth for function definitions.
+  entry: max-nesting-depth
+  language: python
+  types: [python]
