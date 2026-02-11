@@ -13,6 +13,10 @@ dependencies = [
     "tqdm>=4.67.3",
 ]
 
+[project.scripts]
+max-code-lines = "pcr.hooks.max_code_lines:main"
+ban-constructs = "pcr.hooks.ban_constructs:main"
+
 [build-system]
 requires = ["uv_build>=0.9.28,<0.10.0"]
 build-backend = "uv_build"

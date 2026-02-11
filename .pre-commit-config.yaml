@@ -73,13 +73,13 @@ repos:
   hooks:
   - id: max-code-lines
     name: max-code-lines
-    entry: uv run python -m pcr.hooks.max_code_lines --max-function-lines 50 --max-class-lines 200
+    entry: uv run max-code-lines --max-function-lines 50 --max-class-lines 200
     language: system
     types: [python]
 
   - id: ban-constructs
     name: ban-constructs
-    entry: uv run python -m pcr.hooks.ban_constructs --ban "click.echo:use loguru's logger (or print if necessary) instead of click.echo"
+    entry: uv run ban-constructs --ban "click.echo:use loguru's logger (or print if necessary) instead of click.echo"
     language: system
     types: [python]
 

@@ -1,0 +1,13 @@
+- id: max-code-lines
+  name: max-code-lines
+  description: Enforce maximum SLOC per function/class via AST analysis.
+  entry: max-code-lines
+  language: python
+  types: [python]
+
+- id: ban-constructs
+  name: ban-constructs
+  description: Ban specific Python constructs via AST analysis.
+  entry: ban-constructs
+  language: python
+  types: [python]
