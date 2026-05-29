@@ -1,28 +1,36 @@
-- id: max-code-lines
-  name: max-code-lines
-  description: Enforce maximum SLOC per function/class via AST analysis.
-  entry: max-code-lines
+- id: pcr
+  name: pcr
+  description: Run unified project constraint checks.
+  entry: pcr check
   language: python
   types: [python]
-
-- id: ban-constructs
-  name: ban-constructs
-  description: Ban specific Python constructs via AST analysis.
-  entry: ban-constructs
-  language: python
-  types: [python]
-
-- id: ban-dependency
-  name: ban-dependency
-  description: Ban specific packages from the resolved dependency tree.
-  entry: ban-dependency
-  language: python
-  pass_filenames: false
-  always_run: true
-
-- id: max-nesting-depth
-  name: max-nesting-depth
-  description: Enforce maximum nesting depth for function definitions.
-  entry: max-nesting-depth
-  language: python
-  types: [python]
+  args:
+  - --max-sloc=800
+  - --max-func-sloc=500
+  - --max-class-sloc=800
+  - --max-method-sloc=300
+  - --max-function-nesting-depth=2
+  - --max-constructs=1
+  - --max-classes=1
+  - --max-funcs=1
+  - --max-local-helpers=2
+  - --max-args=6
+  - --max-methods=10
+  - --max-class-members=10
+  - --require-class-member-hint
+  - --require-class-doc
+  - --require-function-doc
+  - --require-top-level-import
+  - --ban-future-import
+  - --require-type-hint
+  - --ban-typing-alias
+  - --ban-mutable-global
+  - --ban-pass-only-except
+  - --ban-output-construct
+  - --ban-placeholder-comment
+  - --ban-placeholder-pass
+  - --ban-notimplemented-placeholder
+  - --max-bool-args=1
+  - --require-kw-only-defaults
+  - --max-elifs=2
+  - --max-nested-ifs=2

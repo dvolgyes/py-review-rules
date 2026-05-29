@@ -1,0 +1,43 @@
+# Example pre-commit configuration demonstrating all pcr rules.
+#
+# For a released package, replace `repo: local` with this repository URL and pin
+# `rev` to the version you want to use.
+repos:
+  - repo: local
+    hooks:
+      - id: pcr
+        name: pcr
+        entry: uv run pcr check
+        language: system
+        types: [python]
+        args:
+          - --max-sloc=1000
+          - --max-func-sloc=500
+          - --max-class-sloc=1000
+          - --max-method-sloc=300
+          - --max-function-nesting-depth=2
+          - --max-constructs=1
+          - --max-classes=1
+          - --max-funcs=1
+          - --max-local-helpers=2
+          - --banned-import=osgeo, pyyaml->ruamel.yaml, pyaml->ruamel.yaml
+          - --max-args=6
+          - --max-methods=10
+          - --max-class-members=10
+          - --require-class-member-hint
+          - --require-class-doc
+          - --require-function-doc
+          - --require-top-level-import
+          - --ban-future-import
+          - --require-type-hint
+          - --ban-typing-alias
+          - --ban-mutable-global
+          - --ban-pass-only-except
+          - --ban-output-construct
+          - --ban-placeholder-comment
+          - --ban-placeholder-pass
+          - --ban-notimplemented-placeholder
+          - --max-bool-args=1
+          - --require-kw-only-defaults
+          - --max-elifs=2
+          - --max-nested-ifs=2

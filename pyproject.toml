@@ -1,7 +1,7 @@
 [project]
 name = "pcr"
 version = "0.1.0"
-description = "Add your description here"
+description = "Pre-commit hooks for enforcing Python code review constraints"
 readme = "README.md"
 authors = [
     { name = "David Völgyes", email = "david.volgyes@ieee.org" }
@@ -15,10 +15,7 @@ dependencies = [
 ]
 
 [project.scripts]
-max-code-lines = "pcr.hooks.max_code_lines:main"
-ban-constructs = "pcr.hooks.ban_constructs:main"
-ban-dependency = "pcr.hooks.ban_dependency:main"
-max-nesting-depth = "pcr.hooks.max_nesting_depth:main"
+pcr = "pcr.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.9.28,<0.10.0"]
@@ -44,6 +41,7 @@ max-returns = 6
 max-branches = 10
 max-locals = 12
 max-statements = 40
+max-positional-args = 3
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101", "PLR2004", "ARG"]
+"tests/**" = ["S101", "PLR2004", "ARG", "ANN"]

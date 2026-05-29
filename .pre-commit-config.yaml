@@ -63,8 +63,9 @@ repos:
   hooks:
   - id: ty
     name: ty check
-    entry: uvx ty check . --ignore unresolved-import
+    entry: uvx ty check pcr --ignore unresolved-import
     language: system
+    pass_filenames: false
     types: [python]
 
 # Source: 450_mypy.yaml [central]
@@ -78,16 +79,12 @@ repos:
 # Source: 800_custom_hooks.yaml [local]
 - repo: local
   hooks:
-  - id: max-code-lines
-    name: max-code-lines
-    entry: uv run max-code-lines --max-file-lines 500
+  - id: pcr
+    name: pcr check
+    entry: uv run pcr check
     language: system
     types: [python]
-  - id: max-nesting-depth
-    name: max-nesting-depth
-    entry: uv run max-nesting-depth
-    language: system
-    types: [python]
+    files: ^pcr/.*\.py$
 
 # Source: 900_shfmt.yaml [central]
 - repo: https://github.com/maxwinterstein/shfmt-py

@@ -1,4 +1,4 @@
-"""Shared SLOC counting utility for pre-commit hooks."""
+"""Shared SLOC counting utility."""
 
 
 def count_sloc(source_lines: list[str], start_line: int, end_line: int) -> int:
