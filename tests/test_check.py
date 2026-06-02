@@ -72,6 +72,19 @@ def test_top_level_construct_limit_reports_when_specific_limits_pass() -> None:
     assert result == ["PCR005"]
 
 
+def test_public_function_limit_ignores_private_names() -> None:
+    source = (
+        "def public():\n"
+        "    pass\n"
+        "def _private_a():\n"
+        "    pass\n"
+        "def _private_b():\n"
+        "    pass\n"
+    )
+    result = codes(source, relaxed_config(max_constructs=1, max_funcs=1))
+    assert result == []
+
+
 def test_top_level_construct_limits_ignore_test_files() -> None:
     source = "def test_a() -> None:\n    return None\n\ndef test_b() -> None:\n    return None\n"
     violations = check_file(
