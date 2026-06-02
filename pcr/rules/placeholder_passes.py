@@ -18,7 +18,12 @@ def check_placeholder_passes(
     if module_has_noqa(lines, PLACEHOLDER_BODY_CODE):
         return []
     return [
-        Violation(filepath, node.lineno, PLACEHOLDER_BODY_CODE, "pass placeholder")
+        Violation(
+            filepath,
+            node.lineno,
+            PLACEHOLDER_BODY_CODE,
+            "pass placeholder is banned",
+        )
         for node in ast.walk(tree)
         if isinstance(node, ast.Pass)
         and not line_has_noqa(lines, node.lineno, PLACEHOLDER_BODY_CODE)

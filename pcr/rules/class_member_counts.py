@@ -23,6 +23,12 @@ def check_class_member_counts(
             continue
         if not module_has_noqa(lines, MAX_CLASS_MEMBERS_CODE):
             violations.append(
-                Violation(filepath, node.lineno, MAX_CLASS_MEMBERS_CODE, node.name)
+                Violation(
+                    filepath,
+                    node.lineno,
+                    MAX_CLASS_MEMBERS_CODE,
+                    f"class has too many annotated members ({node.name}): "
+                    f"{len(members)} (max {limit})",
+                )
             )
     return violations

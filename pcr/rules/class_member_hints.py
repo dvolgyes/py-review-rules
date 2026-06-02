@@ -23,7 +23,13 @@ def check_class_member_hints(
         if isinstance(node, ast.ClassDef):
             members = annotated_members(node)
             violations.extend(
-                Violation(filepath, child.lineno, CLASS_MEMBER_HINTS_CODE, node.name)
+                Violation(
+                    filepath,
+                    child.lineno,
+                    CLASS_MEMBER_HINTS_CODE,
+                    f"self assignment is missing class member annotation "
+                    f"({node.name}.{child.attr})",
+                )
                 for child in ast.walk(node)
                 if isinstance(child, ast.Attribute)
                 if is_unannotated_self_assignment(child, members)

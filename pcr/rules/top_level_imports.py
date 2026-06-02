@@ -5,6 +5,7 @@ import ast
 from pcr._noqa import line_has_noqa
 from pcr.codes import TOP_LEVEL_IMPORT_CODE
 from pcr.config import Config
+from pcr.imported_names import imported_names
 from pcr.module_noqa import module_has_noqa
 from pcr.violation import Violation
 
@@ -23,7 +24,10 @@ def check_top_level_imports(
         return []
     return [
         Violation(
-            filepath, node.lineno, TOP_LEVEL_IMPORT_CODE, "import is not top level"
+            filepath,
+            node.lineno,
+            TOP_LEVEL_IMPORT_CODE,
+            f"import is not top level ({', '.join(imported_names(node))})",
         )
         for node in ast.walk(tree)
         if isinstance(node, ast.Import | ast.ImportFrom)

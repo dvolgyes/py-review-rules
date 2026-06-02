@@ -22,7 +22,12 @@ def check_banned_imports(
         if isinstance(node, ast.Import | ast.ImportFrom):
             imported = imported_names(node)
             violations.extend(
-                Violation(filepath, node.lineno, BANNED_IMPORT_CODE, ban)
+                Violation(
+                    filepath,
+                    node.lineno,
+                    BANNED_IMPORT_CODE,
+                    f"banned import ({ban})",
+                )
                 for ban, _alternative in bans
                 if any(name == ban or name.startswith(f"{ban}.") for name in imported)
             )

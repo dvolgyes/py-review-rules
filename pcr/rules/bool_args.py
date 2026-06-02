@@ -40,7 +40,8 @@ def check_bool_args(
                         filepath,
                         node.lineno,
                         BOOL_ARG_CODE,
-                        f"too many bool args: {count}",
+                        f"function has too many bool args ({node.name}): "
+                        f"{count} (max {config.functions.max_bool_args})",
                     )
                 )
     return violations

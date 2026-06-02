@@ -23,6 +23,10 @@ def codes(source: str, config: Config) -> list[str]:
     return [violation.code for violation in check_file("test.py", source, config)]
 
 
+def messages(source: str, config: Config, *, filepath: str = "test.py") -> list[str]:
+    return [violation.message for violation in check_file(filepath, source, config)]
+
+
 def test_max_sloc() -> None:
     source = "\n".join(f"x{i} = {i}" for i in range(3))
     assert codes(source, relaxed_config(max_sloc=2)) == ["PCR001"]
@@ -183,6 +187,24 @@ def test_module_level_mutables_are_banned_with_noqa_override() -> None:
     assert codes(source, relaxed_config(ban_mutable_global=True)) == ["PCR019"]
 
 
+def test_module_level_mutable_message_names_target() -> None:
+    source = "BLOCKED = {}\n"
+    assert messages(source, relaxed_config(ban_mutable_global=True)) == [
+        "mutable global variable (BLOCKED)"
+    ]
+
+
+def test_init_all_is_not_a_mutable_global_violation() -> None:
+    config = relaxed_config(ban_mutable_global=True)
+    source = "__all__ = ['main']\nCACHE = {}\n"
+    assert messages(source, config, filepath="pkg/__init__.py") == [
+        "mutable global variable (CACHE)"
+    ]
+    assert messages("__all__ = ['main']\n", config, filepath="pkg/module.py") == [
+        "mutable global variable (__all__)"
+    ]
+
+
 def test_pass_only_exception_handlers_are_banned() -> None:
     source = "try:\n    risky()\nexcept ValueError:\n    pass\n"
     assert codes(source, relaxed_config(ban_pass_only_except=True)) == ["PCR020"]
@@ -242,6 +264,25 @@ def test_max_nested_ifs_ignores_elif_chain() -> None:
 def test_noqa_exempts_specific_unified_rule() -> None:
     source = "def f(a, b):  # noqa: PCR009\n    pass\n"
     assert codes(source, relaxed_config(max_args=1)) == []
+
+
+def test_diagnostics_explain_rule_and_subject() -> None:
+    assert messages(
+        "def f(a, b):\n    return None\n",
+        relaxed_config(max_args=1),
+    ) == ["function has too many args (f): 2 (max 1)"]
+    assert messages(
+        'class C:\n    """Docs."""\n    files: list[str]\n',
+        relaxed_config(require_class_doc=True),
+    ) == ["missing class docstring member entry (:ivar files:)"]
+    assert messages(
+        "def f() -> None:\n    import numpy\n",
+        relaxed_config(require_top_level_import=True),
+    ) == ["import is not top level (numpy)"]
+    assert messages(
+        "def main():\n    pass\n\ndef configure_logging():\n    pass\n",
+        relaxed_config(max_funcs=1),
+    ) == ["too many public functions: 2 (max 1): main, configure_logging"]
 
 
 def test_config_defaults_enable_core_policy() -> None:

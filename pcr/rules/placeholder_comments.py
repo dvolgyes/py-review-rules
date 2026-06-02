@@ -19,7 +19,12 @@ def check_placeholder_comments(
     if module_has_noqa(lines, PLACEHOLDER_COMMENT_CODE):
         return []
     return [
-        Violation(filepath, line_number, PLACEHOLDER_COMMENT_CODE, "placeholder")
+        Violation(
+            filepath,
+            line_number,
+            PLACEHOLDER_COMMENT_CODE,
+            "placeholder comment is banned",
+        )
         for line_number, comments in comment_by_line(lines).items()
         for comment in comments
         if any(marker in comment.lower() for marker in PLACEHOLDER_MARKERS)

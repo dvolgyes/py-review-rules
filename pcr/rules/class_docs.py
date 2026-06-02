@@ -24,11 +24,21 @@ def check_class_docs(
             docstring = ast.get_docstring(node)
             if not docstring:
                 violations.append(
-                    Violation(filepath, node.lineno, CLASS_DOCSTRING_CODE, node.name)
+                    Violation(
+                        filepath,
+                        node.lineno,
+                        CLASS_DOCSTRING_CODE,
+                        f"missing class docstring ({node.name})",
+                    )
                 )
             else:
                 violations.extend(
-                    Violation(filepath, node.lineno, CLASS_DOCSTRING_CODE, member)
+                    Violation(
+                        filepath,
+                        node.lineno,
+                        CLASS_DOCSTRING_CODE,
+                        f"missing class docstring member entry (:ivar {member}:)",
+                    )
                     for member in sorted(
                         annotated_members(node) - documented_members(docstring)
                     )

@@ -27,7 +27,11 @@ def check_max_args(
             if count > config.functions.max_args:
                 violations.append(
                     Violation(
-                        filepath, node.lineno, MAX_ARGS_CODE, f"too many args: {count}"
+                        filepath,
+                        node.lineno,
+                        MAX_ARGS_CODE,
+                        f"function has too many args ({node.name}): "
+                        f"{count} (max {config.functions.max_args})",
                     )
                 )
     return violations

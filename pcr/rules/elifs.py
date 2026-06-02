@@ -19,7 +19,10 @@ def check_elifs(
         return []
     return [
         Violation(
-            filepath, node.lineno, ELIF_CODE, f"too many elifs: {elif_count(node)}"
+            filepath,
+            node.lineno,
+            ELIF_CODE,
+            f"if chain has too many elifs: {elif_count(node)} (max {limit})",
         )
         for node in ast.walk(tree)
         if isinstance(node, ast.If)

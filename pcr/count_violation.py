@@ -3,6 +3,7 @@
 from collections.abc import Sequence
 
 from pcr.ast_utils import ConstructNode
+from pcr.codes import MAX_CLASSES_CODE
 from pcr.violation import Violation
 
 
@@ -13,4 +14,12 @@ def count_violation(
     if limit is None or len(nodes) <= limit:
         return []
     names = ", ".join(node.name for node in nodes)
-    return [Violation(filepath, nodes[limit].lineno, code, f"too many: {names}")]
+    label = "public classes" if code == MAX_CLASSES_CODE else "public functions"
+    return [
+        Violation(
+            filepath,
+            nodes[limit].lineno,
+            code,
+            f"too many {label}: {len(nodes)} (max {limit}): {names}",
+        )
+    ]

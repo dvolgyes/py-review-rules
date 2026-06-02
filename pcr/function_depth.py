@@ -23,7 +23,13 @@ def collect_function_depth_violations(
             new_depth = depth if is_exempt else depth + 1
             if not is_exempt and new_depth > limit:
                 violations.append(
-                    Violation(filepath, child.lineno, FUNCTION_NESTING_CODE, child.name)
+                    Violation(
+                        filepath,
+                        child.lineno,
+                        FUNCTION_NESTING_CODE,
+                        f"function nesting is too deep ({child.name}): "
+                        f"{new_depth} (max {limit})",
+                    )
                 )
             collect_function_depth_violations(
                 child, new_depth, limit, filepath, lines, violations

@@ -23,7 +23,12 @@ def check_class_assignment_hints(
                     lines, child.lineno, TYPE_HINT_CODE
                 ):
                     violations.extend(
-                        Violation(filepath, child.lineno, TYPE_HINT_CODE, target.id)
+                        Violation(
+                            filepath,
+                            child.lineno,
+                            TYPE_HINT_CODE,
+                            f"class member is missing type hint ({target.id})",
+                        )
                         for target in child.targets
                         if isinstance(target, ast.Name)
                     )

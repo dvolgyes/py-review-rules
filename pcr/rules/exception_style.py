@@ -18,7 +18,12 @@ def check_exception_style(
     if module_has_noqa(lines, EMPTY_EXCEPT_CODE):
         return []
     return [
-        Violation(filepath, node.lineno, EMPTY_EXCEPT_CODE, "pass-only except")
+        Violation(
+            filepath,
+            node.lineno,
+            EMPTY_EXCEPT_CODE,
+            "exception handler only contains pass",
+        )
         for node in ast.walk(tree)
         if isinstance(node, ast.ExceptHandler)
         and len(node.body) == 1

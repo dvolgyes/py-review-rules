@@ -26,13 +26,23 @@ def check_function_type_hints(
         if is_function(node) and not line_has_noqa(lines, node.lineno, TYPE_HINT_CODE):
             args = hinted_args(node, parents)
             violations.extend(
-                Violation(filepath, arg.lineno, TYPE_HINT_CODE, arg.arg)
+                Violation(
+                    filepath,
+                    arg.lineno,
+                    TYPE_HINT_CODE,
+                    f"function argument is missing type hint ({node.name}.{arg.arg})",
+                )
                 for arg in args
                 if arg.annotation is None
                 and not line_has_noqa(lines, arg.lineno, TYPE_HINT_CODE)
             )
             if node.returns is None:
                 violations.append(
-                    Violation(filepath, node.lineno, TYPE_HINT_CODE, node.name)
+                    Violation(
+                        filepath,
+                        node.lineno,
+                        TYPE_HINT_CODE,
+                        f"function is missing return type hint ({node.name})",
+                    )
                 )
     return violations

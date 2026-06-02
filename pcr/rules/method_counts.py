@@ -27,6 +27,12 @@ def check_method_counts(
         if line_has_noqa(lines, node.lineno, MAX_METHODS_CODE):
             continue
         violations.append(
-            Violation(filepath, methods[limit].lineno, MAX_METHODS_CODE, node.name)
+            Violation(
+                filepath,
+                methods[limit].lineno,
+                MAX_METHODS_CODE,
+                f"class has too many methods ({node.name}): "
+                f"{len(methods)} (max {limit})",
+            )
         )
     return violations

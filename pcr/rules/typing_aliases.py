@@ -6,6 +6,7 @@ from pcr._noqa import line_has_noqa
 from pcr.banned_typing_alias import uses_banned_typing_alias
 from pcr.codes import TYPING_ALIAS_CODE
 from pcr.config import Config
+from pcr.dotted_name import dotted_name
 from pcr.module_noqa import module_has_noqa
 from pcr.violation import Violation
 
@@ -24,9 +25,21 @@ def check_typing_aliases(
         if alias.name == "typing"
     }
     return [
-        Violation(filepath, node.lineno, TYPING_ALIAS_CODE, "banned typing alias")
+        Violation(
+            filepath,
+            node.lineno,
+            TYPING_ALIAS_CODE,
+            f"legacy typing alias is banned ({_typing_alias_label(node)})",
+        )
         for node in ast.walk(tree)
         if isinstance(node, ast.ImportFrom | ast.Attribute)
         if uses_banned_typing_alias(node, typing_names)
         and not line_has_noqa(lines, node.lineno, TYPING_ALIAS_CODE)
     ]
+
+
+def _typing_alias_label(node: ast.ImportFrom | ast.Attribute) -> str:
+    if isinstance(node, ast.ImportFrom):
+        names = ", ".join(alias.name for alias in node.names)
+        return f"typing.{names}"
+    return dotted_name(node) or "typing alias"

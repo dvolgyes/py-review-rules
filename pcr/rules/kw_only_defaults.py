@@ -25,7 +25,13 @@ def check_kw_only_defaults(
                 positional[-len(node.args.defaults) :] if node.args.defaults else []
             )
             violations.extend(
-                Violation(filepath, arg.lineno, KW_ONLY_DEFAULT_CODE, arg.arg)
+                Violation(
+                    filepath,
+                    arg.lineno,
+                    KW_ONLY_DEFAULT_CODE,
+                    f"defaulted positional argument should be keyword-only "
+                    f"({node.name}.{arg.arg})",
+                )
                 for arg in defaulted
                 if not line_has_noqa(lines, arg.lineno, KW_ONLY_DEFAULT_CODE)
             )

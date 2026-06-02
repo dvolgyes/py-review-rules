@@ -19,7 +19,12 @@ def check_function_docs(
     if module_has_noqa(lines, FUNCTION_DOCSTRING_CODE):
         return []
     return [
-        Violation(filepath, node.lineno, FUNCTION_DOCSTRING_CODE, node.name)
+        Violation(
+            filepath,
+            node.lineno,
+            FUNCTION_DOCSTRING_CODE,
+            f"missing function docstring ({node.name})",
+        )
         for node in ast.walk(tree)
         if is_function(node)
         and not node.name.startswith("_")

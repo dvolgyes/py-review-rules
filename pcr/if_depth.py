@@ -29,7 +29,12 @@ def collect_if_depth_violations(
                 lines, child.lineno, NESTED_IF_CODE
             ):
                 violations.append(
-                    Violation(filepath, child.lineno, NESTED_IF_CODE, "nested if")
+                    Violation(
+                        filepath,
+                        child.lineno,
+                        NESTED_IF_CODE,
+                        f"if nesting is too deep: {new_depth} (max {limit})",
+                    )
                 )
             collect_if_depth_violations(
                 child, new_depth, limit, filepath, lines, violations

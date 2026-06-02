@@ -19,7 +19,12 @@ def check_notimplemented_placeholders(
     if module_has_noqa(lines, NOTIMPLEMENTED_PLACEHOLDER_CODE):
         return []
     return [
-        Violation(filepath, node.lineno, NOTIMPLEMENTED_PLACEHOLDER_CODE, "placeholder")
+        Violation(
+            filepath,
+            node.lineno,
+            NOTIMPLEMENTED_PLACEHOLDER_CODE,
+            "NotImplementedError message is a placeholder",
+        )
         for node in ast.walk(tree)
         if isinstance(node, ast.Raise)
         and is_bad_notimplemented(node)
