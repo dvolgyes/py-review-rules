@@ -32,13 +32,12 @@ def check_public_counts(
         and not line_has_noqa(lines, node.lineno, MAX_CONSTRUCTS_CODE)
     ]
     constructs: list[ConstructNode] = [*public_classes, *public_funcs]
-    violations = construct_violation(filepath, lines, constructs, config)
-    violations.extend(
-        count_violation(
-            filepath, public_classes, config.counts.max_classes, MAX_CLASSES_CODE
-        )
+    violations = count_violation(
+        filepath, public_classes, config.counts.max_classes, MAX_CLASSES_CODE
     )
     violations.extend(
         count_violation(filepath, public_funcs, config.counts.max_funcs, MAX_FUNCS_CODE)
     )
-    return violations
+    if violations:
+        return violations
+    return construct_violation(filepath, lines, constructs, config)

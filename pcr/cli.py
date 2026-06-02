@@ -8,6 +8,7 @@ import click
 from pcr.check import check_file
 from pcr.config import Config
 from pcr.csv_options import split_csv
+from pcr.rule_selection import selected_violations
 from pcr.violation import Violation
 
 main = click.Group(help="Project constraint checks.")
@@ -100,11 +101,15 @@ main = click.Group(help="Project constraint checks.")
     show_default=True,
     type=click.Choice(("auto", "always", "never")),
 )
+@click.option("--select", multiple=True)
+@click.option("--ignore", multiple=True)
 def check(files: tuple[str, ...], **options: object) -> None:
     """Check Python files against enabled rules."""
     color_mode = options.pop("color_mode")
     if not isinstance(color_mode, str):
         color_mode = "auto"
+    select = options.pop("select")
+    ignore = options.pop("ignore")
     banned_import = options.pop("banned_import")
     if not isinstance(banned_import, tuple):
         banned_import = ()
@@ -117,6 +122,9 @@ def check(files: tuple[str, ...], **options: object) -> None:
     for filepath in _python_files(files):
         source = filepath.read_text(encoding="utf-8")
         violations.extend(check_file(str(filepath), source, config))
+    violations, selection_error = selected_violations(violations, select, ignore)
+    if selection_error is not None:
+        raise click.UsageError(selection_error)
 
     color = color_mode == "always" or (color_mode == "auto" and sys.stderr.isatty())
     for violation in violations:

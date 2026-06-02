@@ -63,7 +63,13 @@ def test_top_level_construct_limits_ignore_private_names() -> None:
         "    pass\n"
     )
     result = codes(source, relaxed_config(max_constructs=1, max_classes=0, max_funcs=1))
-    assert result == ["PCR005", "PCR006", "PCR007"]
+    assert result == ["PCR006", "PCR007"]
+
+
+def test_top_level_construct_limit_reports_when_specific_limits_pass() -> None:
+    source = "def a():\n    pass\nclass C:\n    pass\n"
+    result = codes(source, relaxed_config(max_constructs=1, max_classes=1, max_funcs=1))
+    assert result == ["PCR005"]
 
 
 def test_top_level_construct_limits_ignore_test_files() -> None:
@@ -386,3 +392,50 @@ def test_cli_check_accepts_directories_recursively(tmp_path: Path) -> None:
     assert f"  --> {root / 'top.py'}:1" in result.stderr
     assert f"  --> {nested / 'deep.py'}:1" in result.stderr
     assert "ok.txt" not in result.stderr
+
+
+def test_cli_check_selects_codes(tmp_path: Path) -> None:
+    path = tmp_path / "bad.py"
+    path.write_text("def f(a, b):\n    return None\n", encoding="utf-8")
+    result = CliRunner().invoke(
+        main,
+        [
+            "check",
+            "--max-args=1",
+            "--no-require-type-hint",
+            "--select=PCR009",
+            str(path),
+        ],
+    )
+    assert result.exit_code == 1
+    assert "PCR009" in result.stderr
+    assert "PCR014" not in result.stderr
+
+
+def test_cli_check_ignores_codes(tmp_path: Path) -> None:
+    path = tmp_path / "bad.py"
+    path.write_text("def f(a, b):\n    return None\n", encoding="utf-8")
+    result = CliRunner().invoke(
+        main,
+        [
+            "check",
+            "--max-args=1",
+            "--no-require-type-hint",
+            "--ignore=PCR014",
+            str(path),
+        ],
+    )
+    assert result.exit_code == 1
+    assert "PCR009" in result.stderr
+    assert "PCR014" not in result.stderr
+
+
+def test_cli_check_rejects_select_with_ignore(tmp_path: Path) -> None:
+    path = tmp_path / "bad.py"
+    path.write_text("def f() -> None:\n    return None\n", encoding="utf-8")
+    result = CliRunner().invoke(
+        main,
+        ["check", "--select=PCR009", "--ignore=PCR014", str(path)],
+    )
+    assert result.exit_code == 2
+    assert "--select and --ignore are mutually exclusive" in result.stderr
