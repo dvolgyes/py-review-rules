@@ -347,6 +347,7 @@ def test_cli_check_reports_violations(tmp_path: Path) -> None:
         result.stderr == "PCR009 function has too many args (f): 2 (max 1)\n"
         f"  --> {path}:1\n"
         "\n"
+        "Found 1 bug.\n"
     )
 
 
@@ -373,9 +374,13 @@ def test_cli_check_accepts_directories_recursively(tmp_path: Path) -> None:
     root = tmp_path / "pkg"
     nested = root / "nested"
     nested.mkdir(parents=True)
-    (root / "ok.txt").write_text("def ignored(a, b):\n    pass\n", encoding="utf-8")
-    (root / "top.py").write_text("def top(a, b):\n    pass\n", encoding="utf-8")
-    (nested / "deep.py").write_text("def deep(a, b):\n    pass\n", encoding="utf-8")
+    (root / "ok.txt").write_text(
+        "def ignored(a, b):\n    return None\n", encoding="utf-8"
+    )
+    (root / "top.py").write_text("def top(a, b):\n    return None\n", encoding="utf-8")
+    (nested / "deep.py").write_text(
+        "def deep(a, b):\n    return None\n", encoding="utf-8"
+    )
 
     result = CliRunner().invoke(
         main,
@@ -391,6 +396,7 @@ def test_cli_check_accepts_directories_recursively(tmp_path: Path) -> None:
     assert result.exit_code == 1
     assert f"  --> {root / 'top.py'}:1" in result.stderr
     assert f"  --> {nested / 'deep.py'}:1" in result.stderr
+    assert result.stderr.endswith("Found 2 bugs.\n")
     assert "ok.txt" not in result.stderr
 
 

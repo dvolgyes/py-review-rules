@@ -129,6 +129,9 @@ def check(files: tuple[str, ...], **options: object) -> None:
     color = color_mode == "always" or (color_mode == "auto" and sys.stderr.isatty())
     for violation in violations:
         sys.stderr.write(_format_violation(violation, color=color))
+    if violations:
+        label = "bug" if len(violations) == 1 else "bugs"
+        sys.stderr.write(f"Found {len(violations)} {label}.\n")
 
     raise SystemExit(1 if violations else 0)
 
