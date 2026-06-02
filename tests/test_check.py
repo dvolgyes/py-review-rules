@@ -283,6 +283,13 @@ def test_diagnostics_explain_rule_and_subject() -> None:
         "def main():\n    pass\n\ndef configure_logging():\n    pass\n",
         relaxed_config(max_funcs=1),
     ) == ["too many public functions: 2 (max 1): main, configure_logging"]
+    assert messages(
+        "def a():\n    pass\n"
+        "def b():\n    pass\n"
+        "def c():\n    pass\n"
+        "def d():\n    pass\n",
+        relaxed_config(max_funcs=1),
+    ) == ["too many public functions: 4 (max 1)"]
 
 
 def test_config_defaults_enable_core_policy() -> None:
@@ -318,7 +325,7 @@ def test_config_defaults_enable_core_policy() -> None:
 
 def test_cli_check_reports_violations(tmp_path: Path) -> None:
     path = tmp_path / "bad.py"
-    path.write_text("def f(a, b):\n    pass\n", encoding="utf-8")
+    path.write_text("def f(a, b):\n    return None\n", encoding="utf-8")
     result = CliRunner().invoke(
         main,
         [
@@ -330,7 +337,30 @@ def test_cli_check_reports_violations(tmp_path: Path) -> None:
         ],
     )
     assert result.exit_code == 1
-    assert "PCR009" in result.stderr
+    assert (
+        result.stderr == "PCR009 function has too many args (f): 2 (max 1)\n"
+        f"  --> {path}:1\n"
+        "\n"
+    )
+
+
+def test_cli_check_colors_code_and_description(tmp_path: Path) -> None:
+    path = tmp_path / "bad.py"
+    path.write_text("def f(a, b):\n    return None\n", encoding="utf-8")
+    result = CliRunner().invoke(
+        main,
+        [
+            "check",
+            "--max-args=1",
+            "--no-require-function-doc",
+            "--no-require-type-hint",
+            "--color=always",
+            str(path),
+        ],
+    )
+    assert result.exit_code == 1
+    assert "\x1b[31mPCR009\x1b[0m" in result.stderr
+    assert "\x1b[34mfunction has too many args (f): 2 (max 1)\x1b[0m" in result.stderr
 
 
 def test_cli_check_accepts_directories_recursively(tmp_path: Path) -> None:
@@ -353,6 +383,6 @@ def test_cli_check_accepts_directories_recursively(tmp_path: Path) -> None:
     )
 
     assert result.exit_code == 1
-    assert "top.py:1: PCR009" in result.stderr
-    assert "deep.py:1: PCR009" in result.stderr
+    assert f"  --> {root / 'top.py'}:1" in result.stderr
+    assert f"  --> {nested / 'deep.py'}:1" in result.stderr
     assert "ok.txt" not in result.stderr

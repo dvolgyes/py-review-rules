@@ -8,6 +8,7 @@ import click
 from pcr.check import check_file
 from pcr.config import Config
 from pcr.csv_options import split_csv
+from pcr.violation import Violation
 
 main = click.Group(help="Project constraint checks.")
 
@@ -92,8 +93,18 @@ main = click.Group(help="Project constraint checks.")
 @click.option("--max-nested-ifs", default=2, type=int, show_default=True)
 @click.option("--max-function-nesting-depth", default=2, type=int, show_default=True)
 @click.option("--max-local-helpers", default=2, type=int, show_default=True)
+@click.option(
+    "--color",
+    "color_mode",
+    default="auto",
+    show_default=True,
+    type=click.Choice(("auto", "always", "never")),
+)
 def check(files: tuple[str, ...], **options: object) -> None:
     """Check Python files against enabled rules."""
+    color_mode = options.pop("color_mode")
+    if not isinstance(color_mode, str):
+        color_mode = "auto"
     banned_import = options.pop("banned_import")
     if not isinstance(banned_import, tuple):
         banned_import = ()
@@ -107,11 +118,9 @@ def check(files: tuple[str, ...], **options: object) -> None:
         source = filepath.read_text(encoding="utf-8")
         violations.extend(check_file(str(filepath), source, config))
 
+    color = color_mode == "always" or (color_mode == "auto" and sys.stderr.isatty())
     for violation in violations:
-        sys.stderr.write(
-            f"{violation.filepath}:{violation.line}: "
-            f"{violation.code}: {violation.message}\n"
-        )
+        sys.stderr.write(_format_violation(violation, color=color))
 
     raise SystemExit(1 if violations else 0)
 
@@ -125,6 +134,13 @@ def _python_files(paths: tuple[str, ...]) -> list[Path]:
         else:
             result.append(path)
     return result
+
+
+def _format_violation(violation: Violation, *, color: bool) -> str:
+    code = click.style(violation.code, fg="red")
+    message = click.style(violation.message, fg="blue")
+    formatted = f"{code} {message}\n  --> {violation.filepath}:{violation.line}\n\n"
+    return formatted if color else click.unstyle(formatted)
 
 
 if __name__ == "__main__":

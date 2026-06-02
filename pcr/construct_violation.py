@@ -8,6 +8,8 @@ from pcr.config import Config
 from pcr.module_noqa import module_has_noqa
 from pcr.violation import Violation
 
+MAX_DETAIL_ITEMS = 3
+
 
 def construct_violation(
     filepath: str, lines: list[str], nodes: Sequence[ConstructNode], config: Config
@@ -18,13 +20,16 @@ def construct_violation(
         return []
     if len(nodes) <= limit:
         return []
-    names = ", ".join(node.name for node in nodes)
+    message = f"file has {len(nodes)} public constructs (max {limit})"
+    if len(nodes) <= MAX_DETAIL_ITEMS:
+        names = ", ".join(node.name for node in nodes)
+        message = f"{message}: {names}"
     sorted_nodes = sorted(nodes, key=lambda node: node.lineno)
     return [
         Violation(
             filepath,
             sorted_nodes[limit].lineno,
             MAX_CONSTRUCTS_CODE,
-            f"file has {len(nodes)} public constructs (max {limit}): {names}",
+            message,
         )
     ]
