@@ -331,3 +331,28 @@ def test_cli_check_reports_violations(tmp_path: Path) -> None:
     )
     assert result.exit_code == 1
     assert "PCR009" in result.stderr
+
+
+def test_cli_check_accepts_directories_recursively(tmp_path: Path) -> None:
+    root = tmp_path / "pkg"
+    nested = root / "nested"
+    nested.mkdir(parents=True)
+    (root / "ok.txt").write_text("def ignored(a, b):\n    pass\n", encoding="utf-8")
+    (root / "top.py").write_text("def top(a, b):\n    pass\n", encoding="utf-8")
+    (nested / "deep.py").write_text("def deep(a, b):\n    pass\n", encoding="utf-8")
+
+    result = CliRunner().invoke(
+        main,
+        [
+            "check",
+            "--max-args=1",
+            "--no-require-function-doc",
+            "--no-require-type-hint",
+            str(root),
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "top.py:1: PCR009" in result.stderr
+    assert "deep.py:1: PCR009" in result.stderr
+    assert "ok.txt" not in result.stderr

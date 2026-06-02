@@ -103,9 +103,9 @@ def check(files: tuple[str, ...], **options: object) -> None:
     config = Config.from_options(options)
 
     violations = []
-    for filepath in files:
-        source = Path(filepath).read_text(encoding="utf-8")
-        violations.extend(check_file(filepath, source, config))
+    for filepath in _python_files(files):
+        source = filepath.read_text(encoding="utf-8")
+        violations.extend(check_file(str(filepath), source, config))
 
     for violation in violations:
         sys.stderr.write(
@@ -114,6 +114,17 @@ def check(files: tuple[str, ...], **options: object) -> None:
         )
 
     raise SystemExit(1 if violations else 0)
+
+
+def _python_files(paths: tuple[str, ...]) -> list[Path]:
+    result: list[Path] = []
+    for raw_path in paths:
+        path = Path(raw_path)
+        if path.is_dir():
+            result.extend(sorted(path.rglob("*.py")))
+        else:
+            result.append(path)
+    return result
 
 
 if __name__ == "__main__":
