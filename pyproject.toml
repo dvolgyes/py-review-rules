@@ -1,5 +1,5 @@
 [project]
-name = "pcr"
+name = "py-review-rules"
 version = "0.1.0"
 description = "Pre-commit hooks for enforcing Python code review constraints"
 readme = "README.md"
@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [project.scripts]
-pcr = "pcr.cli:main"
+py-review-rules = "pcr.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.11.19,<0.12"]

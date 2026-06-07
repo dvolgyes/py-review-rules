@@ -1,13 +1,13 @@
-# Example pre-commit configuration demonstrating all pcr rules.
+# Example pre-commit configuration demonstrating all py-review-rules rules.
 #
 # For a released package, replace `repo: local` with this repository URL and pin
 # `rev` to the version you want to use.
 repos:
   - repo: local
     hooks:
-      - id: pcr
-        name: pcr
-        entry: uv run pcr check
+      - id: py-review-rules
+        name: py-review-rules
+        entry: uv run py-review-rules check
         language: system
         types: [python]
         args:

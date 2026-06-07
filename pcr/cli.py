@@ -1,4 +1,4 @@
-"""Unified command-line interface for pcr."""
+"""Unified command-line interface for py-review-rules."""
 
 import sys
 from pathlib import Path

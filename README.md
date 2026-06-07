@@ -1,7 +1,7 @@
-# pcr - Python pre-commit rules
+# py-review-rules - Python pre-commit rules
 
-`pcr` is a small Python package of command-line hooks for enforcing project-specific
-code review rules before changes are committed.
+`py-review-rules` is a small Python package of command-line hooks for enforcing
+project-specific code review rules before changes are committed.
 
 Highly opinionated, but it aims quality code production by AI: enforcing modularity,
 limits source code lines, number of constructs (functions, classes) in a file, etc.,
@@ -24,16 +24,16 @@ decided not to allow.
 
 ## Unified Command
 
-The preferred interface is one `pcr check` command. The defaults are intentionally
-strict, so a pre-commit hook can use the checks directly and override only the
-constraints a project wants to tune:
+The preferred interface is one `py-review-rules check` command. The defaults are
+intentionally strict, so a pre-commit hook can use the checks directly and
+override only the constraints a project wants to tune:
 
 ```yaml
 - repo: local
   hooks:
-    - id: pcr
-      name: pcr
-      entry: uv run pcr check
+    - id: py-review-rules
+      name: py-review-rules
+      entry: uv run py-review-rules check
       language: system
       types: [python]
       args:
@@ -135,11 +135,11 @@ configuration that demonstrates every rule.
 ## Exemptions
 
 Rules can be exempted with `# noqa` comments. A bare `# noqa` exempts the
-definition or module from all `pcr` checks that apply there, while rule-specific
-comments such as `# noqa: PCR009` exempt only the named rule. For project files
-that also run Ruff, prefer `# pcr: noqa: PCR009` so Ruff does not interpret the
-custom code. Public definition counting treats names that start with `_` as local
-helpers for public construct limits. They are still limited by
+definition or module from all `py-review-rules` checks that apply there, while
+rule-specific comments such as `# noqa: PCR009` exempt only the named rule. For
+project files that also run Ruff, prefer `# pcr: noqa: PCR009` so Ruff does not
+interpret the custom code. Public definition counting treats names that start
+with `_` as local helpers for public construct limits. They are still limited by
 `--max-local-helpers`; prefer moving reusable behavior into a focused public
 function in its own module.
 
@@ -178,9 +178,9 @@ Unified rule codes:
 
 ## Ruff Equivalents
 
-`pcr` intentionally focuses on project-shaping rules that are either absent from
-Ruff or more specific than Ruff's general complexity checks. Keep using Ruff for
-broad complexity and size metrics when it already has the rule:
+`py-review-rules` intentionally focuses on project-shaping rules that are either
+absent from Ruff or more specific than Ruff's general complexity checks. Keep
+using Ruff for broad complexity and size metrics when it already has the rule:
 
 - `C901`: McCabe complexity
 - `PLR0911`: too many returns
@@ -206,6 +206,7 @@ max-statements = 40
 max-positional-args = 3
 ```
 
-Use `pcr` for the stricter architectural choices Ruff does not express directly,
-such as `--require-kw-only-defaults`, `--max-bool-args`, `--max-elifs`,
-`--max-nested-ifs`, `--max-function-nesting-depth`, and `--max-local-helpers`.
+Use `py-review-rules` for the stricter architectural choices Ruff does not
+express directly, such as `--require-kw-only-defaults`, `--max-bool-args`,
+`--max-elifs`, `--max-nested-ifs`, `--max-function-nesting-depth`, and
+`--max-local-helpers`.
