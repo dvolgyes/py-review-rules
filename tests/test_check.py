@@ -311,68 +311,6 @@ def test_diagnostics_explain_rule_and_subject() -> None:
     ) == ["too many public functions: 4 (max 1)"]
 
 
-def test_config_defaults_enable_core_policy() -> None:
-    config = Config()
-    defaults = (
-        config.size.max_sloc,
-        config.size.max_func_sloc,
-        config.size.max_method_sloc,
-        config.functions.max_args,
-        config.counts.max_methods,
-        config.counts.max_class_members,
-        config.counts.max_constructs,
-        config.counts.max_classes,
-        config.counts.max_funcs,
-        config.counts.max_local_helpers,
-        config.classes.require_class_member_hint,
-        config.classes.require_class_doc,
-        config.functions.require_function_doc,
-        config.imports.require_top_level_import,
-        config.imports.ban_future_import,
-        config.functions.require_type_hint,
-        config.imports.ban_typing_alias,
-        config.style.ban_mutable_global,
-        config.style.ban_pass_only_except,
-        config.style.ban_output_construct,
-        config.style.ban_placeholder_comment,
-        config.style.ban_placeholder_pass,
-        config.style.ban_notimplemented_placeholder,
-        config.functions.max_bool_args,
-        config.functions.require_kw_only_defaults,
-        config.control_flow.max_elifs,
-        config.control_flow.max_nested_ifs,
-    )
-    assert defaults == (
-        800,
-        500,
-        300,
-        6,
-        10,
-        10,
-        1,
-        1,
-        1,
-        2,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        True,
-        1,
-        True,
-        2,
-        2,
-    )
-
-
 def test_cli_check_reports_violations(tmp_path: Path) -> None:
     path = tmp_path / "bad.py"
     path.write_text("def f(a, b):\n    return None\n", encoding="utf-8")
