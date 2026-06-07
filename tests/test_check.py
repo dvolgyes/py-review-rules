@@ -82,7 +82,7 @@ def test_public_function_limit_ignores_private_names() -> None:
         "    pass\n"
     )
     result = codes(source, relaxed_config(max_constructs=1, max_funcs=1))
-    assert result == []
+    assert not result
 
 
 def test_top_level_construct_limits_ignore_test_files() -> None:
@@ -92,7 +92,7 @@ def test_top_level_construct_limits_ignore_test_files() -> None:
         source,
         relaxed_config(max_constructs=1, max_classes=1, max_funcs=1),
     )
-    assert violations == []
+    assert not violations
 
 
 def test_banned_import_supports_alternatives() -> None:
@@ -159,7 +159,7 @@ def test_class_docstring_requires_ivar_entries() -> None:
 
 def test_class_docstring_accepts_documented_members() -> None:
     source = 'class C:\n    """Class docs.\n\n    :ivar x: value\n    """\n    x: int\n'
-    assert codes(source, relaxed_config(require_class_doc=True)) == []
+    assert not codes(source, relaxed_config(require_class_doc=True))
 
 
 def test_function_docstring_required() -> None:
@@ -190,7 +190,7 @@ def test_type_hint_noqa_exempts_single_line() -> None:
     source = (
         "class C:\n    x = 1  # noqa: PCR017\n\ndef f(a):  # noqa: PCR017\n    pass\n"
     )
-    assert codes(source, relaxed_config(require_type_hint=True)) == []
+    assert not codes(source, relaxed_config(require_type_hint=True))
 
 
 def test_typing_alias_import_and_usage_are_banned() -> None:
@@ -255,7 +255,7 @@ def test_notimplemented_placeholder_is_banned_but_abstract_contract_is_allowed()
     )
     config = relaxed_config(ban_notimplemented_placeholder=True)
     assert codes(bad, config) == ["PCR024"]
-    assert codes(good, config) == []
+    assert not codes(good, config)
 
 
 def test_max_bool_args_defaults_to_one() -> None:
@@ -282,7 +282,7 @@ def test_max_nested_ifs_ignores_elif_chain() -> None:
 
 def test_noqa_exempts_specific_unified_rule() -> None:
     source = "def f(a, b):  # noqa: PCR009\n    pass\n"
-    assert codes(source, relaxed_config(max_args=1)) == []
+    assert not codes(source, relaxed_config(max_args=1))
 
 
 def test_diagnostics_explain_rule_and_subject() -> None:
@@ -313,33 +313,64 @@ def test_diagnostics_explain_rule_and_subject() -> None:
 
 def test_config_defaults_enable_core_policy() -> None:
     config = Config()
-    assert config.size.max_sloc == 800
-    assert config.size.max_func_sloc == 500
-    assert config.size.max_method_sloc == 300
-    assert config.functions.max_args == 6
-    assert config.counts.max_methods == 10
-    assert config.counts.max_class_members == 10
-    assert config.counts.max_constructs == 1
-    assert config.counts.max_classes == 1
-    assert config.counts.max_funcs == 1
-    assert config.counts.max_local_helpers == 2
-    assert config.classes.require_class_member_hint
-    assert config.classes.require_class_doc
-    assert config.functions.require_function_doc
-    assert config.imports.require_top_level_import
-    assert config.imports.ban_future_import
-    assert config.functions.require_type_hint
-    assert config.imports.ban_typing_alias
-    assert config.style.ban_mutable_global
-    assert config.style.ban_pass_only_except
-    assert config.style.ban_output_construct
-    assert config.style.ban_placeholder_comment
-    assert config.style.ban_placeholder_pass
-    assert config.style.ban_notimplemented_placeholder
-    assert config.functions.max_bool_args == 1
-    assert config.functions.require_kw_only_defaults
-    assert config.control_flow.max_elifs == 2
-    assert config.control_flow.max_nested_ifs == 2
+    defaults = (
+        config.size.max_sloc,
+        config.size.max_func_sloc,
+        config.size.max_method_sloc,
+        config.functions.max_args,
+        config.counts.max_methods,
+        config.counts.max_class_members,
+        config.counts.max_constructs,
+        config.counts.max_classes,
+        config.counts.max_funcs,
+        config.counts.max_local_helpers,
+        config.classes.require_class_member_hint,
+        config.classes.require_class_doc,
+        config.functions.require_function_doc,
+        config.imports.require_top_level_import,
+        config.imports.ban_future_import,
+        config.functions.require_type_hint,
+        config.imports.ban_typing_alias,
+        config.style.ban_mutable_global,
+        config.style.ban_pass_only_except,
+        config.style.ban_output_construct,
+        config.style.ban_placeholder_comment,
+        config.style.ban_placeholder_pass,
+        config.style.ban_notimplemented_placeholder,
+        config.functions.max_bool_args,
+        config.functions.require_kw_only_defaults,
+        config.control_flow.max_elifs,
+        config.control_flow.max_nested_ifs,
+    )
+    assert defaults == (
+        800,
+        500,
+        300,
+        6,
+        10,
+        10,
+        1,
+        1,
+        1,
+        2,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        1,
+        True,
+        2,
+        2,
+    )
 
 
 def test_cli_check_reports_violations(tmp_path: Path) -> None:

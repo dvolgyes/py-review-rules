@@ -24,24 +24,39 @@ def check_bool_args(
         return []
     violations: list[Violation] = []
     for node in ast.walk(tree):
-        if is_function(node) and not line_has_noqa(lines, node.lineno, BOOL_ARG_CODE):
-            args = [*node.args.posonlyargs, *node.args.args, *node.args.kwonlyargs]
-            if (
-                is_class_member(node, parents)
-                and args
-                and args[0].arg in {"self", "cls"}
-            ):
-                args = args[1:]
-            defaults = defaults_by_arg(node)
-            count = sum(1 for arg in args if is_bool_arg(arg, defaults.get(arg.arg)))
-            if count > config.functions.max_bool_args:
-                violations.append(
-                    Violation(
-                        filepath,
-                        node.lineno,
-                        BOOL_ARG_CODE,
-                        f"function has too many bool args ({node.name}): "
-                        f"{count} (max {config.functions.max_bool_args})",
-                    )
+        if not is_function(node) or line_has_noqa(lines, node.lineno, BOOL_ARG_CODE):
+            continue
+        count = _bool_arg_count(node, parents)
+        if count > config.functions.max_bool_args:
+            violations.append(
+                Violation(
+                    filepath,
+                    node.lineno,
+                    BOOL_ARG_CODE,
+                    f"function has too many bool args ({node.name}): "
+                    f"{count} (max {config.functions.max_bool_args})",
                 )
+            )
     return violations
+
+
+def _bool_arg_count(
+    node: ast.FunctionDef | ast.AsyncFunctionDef,
+    parents: dict[ast.AST, ast.AST],
+) -> int:
+    defaults = defaults_by_arg(node)
+    return sum(
+        1
+        for arg in _counted_args(node, parents)
+        if is_bool_arg(arg, defaults.get(arg.arg))
+    )
+
+
+def _counted_args(
+    node: ast.FunctionDef | ast.AsyncFunctionDef,
+    parents: dict[ast.AST, ast.AST],
+) -> list[ast.arg]:
+    args = [*node.args.posonlyargs, *node.args.args, *node.args.kwonlyargs]
+    if is_class_member(node, parents) and args and args[0].arg in {"self", "cls"}:
+        return args[1:]
+    return args
