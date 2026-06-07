@@ -1,7 +1,11 @@
-# pcr
+# pcr - Python pre-commit rules
 
 `pcr` is a small Python package of command-line hooks for enforcing project-specific
 code review rules before changes are committed.
+
+Highly opinionated, but it aims quality code production by AI: enforcing modularity,
+limits source code lines, number of constructs (functions, classes) in a file, etc.,
+therefore the coding agent gets direct feedback at commit time.
 
 The package currently provides hooks that:
 

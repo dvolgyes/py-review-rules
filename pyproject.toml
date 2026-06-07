@@ -6,19 +6,16 @@ readme = "README.md"
 authors = [
     { name = "David Völgyes", email = "david.volgyes@ieee.org" }
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.15"
 dependencies = [
-    "click>=8.3.1",
-    "loguru>=0.7.3",
-    "packaging>=26.0",
-    "tqdm>=4.67.3",
+    "click>=8.4.1,<9",
 ]
 
 [project.scripts]
 pcr = "pcr.cli:main"
 
 [build-system]
-requires = ["uv_build>=0.9.28,<0.10.0"]
+requires = ["uv_build>=0.11.19,<0.12"]
 build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "pcr"
@@ -26,10 +23,10 @@ module-root = ""
 
 [dependency-groups]
 dev = [
-    "coverage>=7.13.4",
-    "pytest>=9.0.2",
-    "pytest-cov>=7.0.0",
-    "pytest-xdist>=3.8.0",
+    "coverage>=7.14.1,<8",
+    "pytest>=9.0.3,<10",
+    "pytest-cov>=7.1.0,<8",
+    "pytest-xdist>=3.8.0,<4",
 ]
 
 [tool.ruff.lint.mccabe]
