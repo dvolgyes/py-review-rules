@@ -1,4 +1,4 @@
-from pcr._sloc import count_sloc
+from prr._sloc import count_sloc
 
 
 def test_counts_only_code_lines() -> None:

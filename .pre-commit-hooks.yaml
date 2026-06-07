@@ -1,7 +1,7 @@
-- id: pcr
-  name: pcr
+- id: py-review-rules
+  name: py-review-rules
   description: Run unified project constraint checks.
-  entry: pcr check
+  entry: py-review-rules check
   language: python
   types: [python]
   args:

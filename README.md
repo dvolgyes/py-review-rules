@@ -136,8 +136,8 @@ configuration that demonstrates every rule.
 
 Rules can be exempted with `# noqa` comments. A bare `# noqa` exempts the
 definition or module from all `py-review-rules` checks that apply there, while
-rule-specific comments such as `# noqa: PCR009` exempt only the named rule. For
-project files that also run Ruff, prefer `# pcr: noqa: PCR009` so Ruff does not
+rule-specific comments such as `# noqa: PRR009` exempt only the named rule. For
+project files that also run Ruff, prefer `# prr: noqa: PRR009` so Ruff does not
 interpret the custom code. Public definition counting treats names that start
 with `_` as local helpers for public construct limits. They are still limited by
 `--max-local-helpers`; prefer moving reusable behavior into a focused public
@@ -145,36 +145,36 @@ function in its own module.
 
 Unified rule codes:
 
-- `PCR001`: file SLOC
-- `PCR002`: function SLOC
-- `PCR003`: class SLOC
-- `PCR004`: method SLOC
-- `PCR005`: public constructs per file
-- `PCR006`: public classes per file
-- `PCR007`: public functions per file
-- `PCR008`: banned imports
-- `PCR009`: function or method parameters
-- `PCR010`: class methods
-- `PCR011`: undeclared class member assignments
-- `PCR012`: class member variables
-- `PCR013`: class docstrings and member documentation
-- `PCR014`: function docstrings
-- `PCR015`: non-top-level imports
-- `PCR016`: banned future annotations import
-- `PCR017`: missing type hints
-- `PCR018`: banned `typing` aliases
-- `PCR019`: module-level mutable values
-- `PCR020`: pass-only exception handlers
-- `PCR021`: banned output constructs
-- `PCR022`: placeholder comments
-- `PCR023`: placeholder `pass`
-- `PCR024`: placeholder `NotImplementedError`
-- `PCR025`: boolean parameters
-- `PCR026`: positional parameters with defaults
-- `PCR027`: too many `elif` branches
-- `PCR028`: nested `if` depth
-- `PCR029`: nested function depth
-- `PCR030`: local helper functions per file
+- `PRR001`: file SLOC
+- `PRR002`: function SLOC
+- `PRR003`: class SLOC
+- `PRR004`: method SLOC
+- `PRR005`: public constructs per file
+- `PRR006`: public classes per file
+- `PRR007`: public functions per file
+- `PRR008`: banned imports
+- `PRR009`: function or method parameters
+- `PRR010`: class methods
+- `PRR011`: undeclared class member assignments
+- `PRR012`: class member variables
+- `PRR013`: class docstrings and member documentation
+- `PRR014`: function docstrings
+- `PRR015`: non-top-level imports
+- `PRR016`: banned future annotations import
+- `PRR017`: missing type hints
+- `PRR018`: banned `typing` aliases
+- `PRR019`: module-level mutable values
+- `PRR020`: pass-only exception handlers
+- `PRR021`: banned output constructs
+- `PRR022`: placeholder comments
+- `PRR023`: placeholder `pass`
+- `PRR024`: placeholder `NotImplementedError`
+- `PRR025`: boolean parameters
+- `PRR026`: positional parameters with defaults
+- `PRR027`: too many `elif` branches
+- `PRR028`: nested `if` depth
+- `PRR029`: nested function depth
+- `PRR030`: local helper functions per file
 
 ## Ruff Equivalents
 
