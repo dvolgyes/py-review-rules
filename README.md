@@ -41,13 +41,13 @@ override only the constraints a project wants to tune:
         - --max-func-sloc=500
         - --max-class-sloc=1000
         - --max-method-sloc=300
-        - --max-function-nesting-depth=2
+        - --max-function-nesting-depth=0
         - --max-constructs=1
         - --max-classes=1
         - --max-funcs=1
         - --max-local-helpers=2
         - --banned-import=osgeo, pyyaml->ruamel.yaml, pyaml->ruamel.yaml
-        - --max-args=6
+        - --max-args=9
         - --max-methods=10
         - --max-class-members=10
         - --require-class-member-hint
@@ -63,9 +63,9 @@ override only the constraints a project wants to tune:
         - --ban-placeholder-comment
         - --ban-placeholder-pass
         - --ban-notimplemented-placeholder
-        - --max-bool-args=1
+        - --max-bool-args=3
         - --require-kw-only-defaults
-        - --max-elifs=2
+        - --max-elifs=4
         - --max-nested-ifs=2
 ```
 
@@ -79,7 +79,7 @@ Supported rules:
 - `--max-class-sloc`: maximum SLOC in a class, default `800`
 - `--max-method-sloc`: maximum SLOC in a class method, default `300`
 - `--max-function-nesting-depth`: maximum nested function definition depth,
-  default `2`
+  default `0`
 - `--max-constructs`: maximum public top-level classes and functions in a file,
   default `1`
 - `--max-classes`: maximum public top-level classes in a file, default `1`
@@ -88,7 +88,7 @@ Supported rules:
   default `2`
 - `--banned-import`: banned import name, optionally with an alternative
 - `--max-args`: maximum function or method parameters, including `*args` and
-  `**kwargs`, default `6`
+  `**kwargs`, default `9`
 - `--max-methods`: maximum methods in a class, default `10`
 - `--max-class-members`: maximum annotated class member variables, default `10`
 - `--require-class-member-hint`: forbid assigning `self.member` unless the
@@ -118,10 +118,10 @@ Supported rules:
 - `--ban-notimplemented-placeholder`: ban vague `NotImplementedError`
   placeholders, default enabled. Intentional abstract/interface contracts are
   allowed when the message says so.
-- `--max-bool-args`: maximum boolean parameters, default `1`
+- `--max-bool-args`: maximum boolean parameters, default `3`
 - `--require-kw-only-defaults`: require every parameter with a default value to
   be keyword-only, default enabled
-- `--max-elifs`: maximum `elif` branches in one `if` chain, default `2`
+- `--max-elifs`: maximum `elif` branches in one `if` chain, default `4`
 - `--max-nested-ifs`: maximum nested non-`elif` `if` depth, default `2`
 
 Banned imports can be written as `--banned-import=pyyaml`, or with an

@@ -54,12 +54,12 @@ class _FunctionConfig:
     :ivar max_function_nesting_depth: maximum nested function depth
     """
 
-    max_args: int | None = 6
-    max_bool_args: int | None = 1
+    max_args: int | None = 9
+    max_bool_args: int | None = 3
     require_function_doc: bool = True
     require_type_hint: bool = True
     require_kw_only_defaults: bool = True
-    max_function_nesting_depth: int | None = 2
+    max_function_nesting_depth: int | None = 0
 
 
 @dataclass(frozen=True)
@@ -118,7 +118,7 @@ class _ControlFlowConfig:
     :ivar max_nested_ifs: maximum nested if depth
     """
 
-    max_elifs: int | None = 2
+    max_elifs: int | None = 4
     max_nested_ifs: int | None = 2
 
 

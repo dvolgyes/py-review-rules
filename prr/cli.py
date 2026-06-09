@@ -24,7 +24,7 @@ main = click.Group(help="Project constraint checks.")
 @click.option("--max-classes", default=1, type=int, show_default=True)
 @click.option("--max-funcs", default=1, type=int, show_default=True)
 @click.option("--banned-import", multiple=True)
-@click.option("--max-args", default=6, type=int, show_default=True)
+@click.option("--max-args", default=9, type=int, show_default=True)
 @click.option("--max-methods", default=10, type=int, show_default=True)
 @click.option("--max-class-members", default=10, type=int, show_default=True)
 @click.option(
@@ -84,15 +84,15 @@ main = click.Group(help="Project constraint checks.")
     default=True,
     show_default=True,
 )
-@click.option("--max-bool-args", default=1, type=int, show_default=True)
+@click.option("--max-bool-args", default=3, type=int, show_default=True)
 @click.option(
     "--require-kw-only-defaults/--no-require-kw-only-defaults",
     default=True,
     show_default=True,
 )
-@click.option("--max-elifs", default=2, type=int, show_default=True)
+@click.option("--max-elifs", default=4, type=int, show_default=True)
 @click.option("--max-nested-ifs", default=2, type=int, show_default=True)
-@click.option("--max-function-nesting-depth", default=2, type=int, show_default=True)
+@click.option("--max-function-nesting-depth", default=0, type=int, show_default=True)
 @click.option("--max-local-helpers", default=2, type=int, show_default=True)
 @click.option(
     "--color",

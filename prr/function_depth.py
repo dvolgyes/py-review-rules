@@ -20,7 +20,10 @@ def collect_function_depth_violations(
     for child in ast.iter_child_nodes(node):
         if is_function(child):
             is_exempt = line_has_noqa(lines, child.lineno, FUNCTION_NESTING_CODE)
-            new_depth = depth if is_exempt else depth + 1
+            # Top-level functions (children of Module) are not nested.
+            new_depth = (
+                depth if (is_exempt or isinstance(node, ast.Module)) else depth + 1
+            )
             if not is_exempt and new_depth > limit:
                 violations.append(
                     Violation(
