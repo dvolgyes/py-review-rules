@@ -104,33 +104,12 @@ repos:
     - --max-modules=B
     - --max-average=B
 
-# Source: 250_semgrep.yaml [central]
-- repo: https://github.com/semgrep/pre-commit
-  rev: v1.165.0
+# Source: 230_py-review-rules.yaml [central]
+- repo: https://github.com/dvolgyes/py-review-rules.git
+  rev: '0.1'
   hooks:
-  - id: semgrep
-    language_version: python3.12
-    additional_dependencies:
-          # Semgrep/OpenTelemetry may import pkg_resources; Python 3.12 venvs
-          # do not include setuptools by default.
-    - setuptools<82
-    args:
-          # Avoid shared-memory worker fan-out in constrained local environments.
-    - --jobs
-    - '1'
-
-          # General Python rules.
-    - --config
-    - p/python
-
-          # Security-audit rules. Some overlap with Ruff S/Bandit-style checks,
-          # but useful as a second opinion if kept small.
-    - --config
-    - p/security-audit
-
-          # Keep local pre-commit focused on actionable findings.
-    - --severity
-    - ERROR
+  - id: py-review-rules
+    exclude: ^tests/
 
 # Source: 300_mdformat.yaml [central]
 - repo: https://github.com/executablebooks/mdformat
@@ -149,6 +128,12 @@ repos:
     exclude: ^tests/
     args: [--ignore-missing-imports, --strict]
     additional_dependencies: [types-requests, types-click, types-setuptools]
+
+# Source: 500_actionlint.yaml [central]
+- repo: https://github.com/rhysd/actionlint
+  rev: v1.7.12
+  hooks:
+  - id: actionlint
 
 # Source: 900_shfmt.yaml [central]
 - repo: https://github.com/maxwinterstein/shfmt-py

@@ -16,7 +16,7 @@ def count_violation(
     if limit is None or len(nodes) <= limit:
         return []
     label = "public classes" if code == MAX_CLASSES_CODE else "public functions"
-    message = f"too many {label}: {len(nodes)} (max {limit})"
+    message = f"too many {label}: {len(nodes)} (max {limit}); consider restructuring into multiple files"
     if len(nodes) <= MAX_DETAIL_ITEMS:
         names = ", ".join(node.name for node in nodes)
         message = f"{message}: {names}"

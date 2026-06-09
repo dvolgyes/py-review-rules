@@ -32,7 +32,7 @@ def check_method_counts(
                 methods[limit].lineno,
                 MAX_METHODS_CODE,
                 f"class has too many methods ({node.name}): "
-                f"{len(methods)} (max {limit})",
+                f"{len(methods)} (max {limit}); consider restructuring into multiple files",
             )
         )
     return violations

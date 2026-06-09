@@ -20,7 +20,7 @@ def construct_violation(
         return []
     if len(nodes) <= limit:
         return []
-    message = f"file has {len(nodes)} public constructs (max {limit})"
+    message = f"file has {len(nodes)} public constructs (max {limit}); consider restructuring into multiple files"
     if len(nodes) <= MAX_DETAIL_ITEMS:
         names = ", ".join(node.name for node in nodes)
         message = f"{message}: {names}"

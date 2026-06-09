@@ -28,7 +28,7 @@ def check_class_member_counts(
                     node.lineno,
                     MAX_CLASS_MEMBERS_CODE,
                     f"class has too many annotated members ({node.name}): "
-                    f"{len(members)} (max {limit})",
+                    f"{len(members)} (max {limit}); consider restructuring into multiple files",
                 )
             )
     return violations
