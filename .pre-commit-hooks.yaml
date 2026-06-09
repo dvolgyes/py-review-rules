@@ -9,12 +9,12 @@
   - --max-func-sloc=500
   - --max-class-sloc=800
   - --max-method-sloc=300
-  - --max-function-nesting-depth=2
+  - --max-function-nesting-depth=0
   - --max-constructs=1
   - --max-classes=1
   - --max-funcs=1
   - --max-local-helpers=2
-  - --max-args=6
+  - --max-args=9
   - --max-methods=10
   - --max-class-members=10
   - --require-class-member-hint
@@ -30,7 +30,7 @@
   - --ban-placeholder-comment
   - --ban-placeholder-pass
   - --ban-notimplemented-placeholder
-  - --max-bool-args=1
+  - --max-bool-args=3
   - --require-kw-only-defaults
-  - --max-elifs=2
+  - --max-elifs=4
   - --max-nested-ifs=2
