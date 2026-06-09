@@ -28,7 +28,10 @@ def check_class_member_hints(
                     child.lineno,
                     CLASS_MEMBER_HINTS_CODE,
                     f"self assignment is missing class member annotation "
-                    f"({node.name}.{child.attr})",
+                    f"({node.name}.{child.attr}). "
+                    f"Document class members at the class level:\n"
+                    f"  class {node.name}:\n"
+                    f"      {child.attr}: <type>",
                 )
                 for child in ast.walk(node)
                 if isinstance(child, ast.Attribute)

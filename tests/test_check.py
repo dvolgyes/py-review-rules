@@ -302,7 +302,7 @@ def test_diagnostics_explain_rule_and_subject() -> None:
         "def main():\n    pass\n\ndef configure_logging():\n    pass\n",
         relaxed_config(max_funcs=1),
     ) == [
-        "too many public functions: 2 (max 1); consider restructuring into multiple files: main, configure_logging"
+        "too many public functions: 2 (max 1); consider organizing functions into their own module: main, configure_logging"
     ]
     assert messages(
         "def a():\n    pass\n"
@@ -311,7 +311,7 @@ def test_diagnostics_explain_rule_and_subject() -> None:
         "def d():\n    pass\n",
         relaxed_config(max_funcs=1),
     ) == [
-        "too many public functions: 4 (max 1); consider restructuring into multiple files"
+        "too many public functions: 4 (max 1); consider organizing functions into their own module"
     ]
 
 

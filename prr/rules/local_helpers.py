@@ -32,6 +32,7 @@ def check_local_helpers(
             filepath,
             helpers[limit].lineno,
             LOCAL_HELPERS_CODE,
-            f"file has {len(helpers)} local helper functions (max {limit}): {names}",
+            f"file has {len(helpers)} local helper functions (max {limit}); "
+            f"consider organizing into their own module: {names}",
         )
     ]
